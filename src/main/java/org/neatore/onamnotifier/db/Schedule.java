@@ -7,13 +7,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule {
     public Schedule(String title, String content, Integer grade, Integer classNum, LocalDateTime endDate) {

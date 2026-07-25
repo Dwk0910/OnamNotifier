@@ -3,6 +3,7 @@ package org.neatore.onamnotifier.service;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.neatore.onamnotifier.db.Schedule;
 import org.neatore.onamnotifier.db.ScheduleMapper;
@@ -32,5 +33,18 @@ public class ScheduleService {
         Optional<Schedule> response = this.scheduleRepository.findById(id);
         return response.map(this.scheduleMapper::toDto)
                 .orElseThrow(() -> new QueryNotFoundException("Schedule not found with id: " + id));
+    }
+
+    @Transactional
+    public UUID createNewSchedule(ScheduleDto.PostRequest request) {
+        Schedule newSchedule = new Schedule(
+                request.title(),
+                request.content(),
+                request.grade(),
+                request.classNum(),
+                request.endDate()
+        );
+        this.scheduleRepository.save(newSchedule);
+        return newSchedule.getId();
     }
 }
