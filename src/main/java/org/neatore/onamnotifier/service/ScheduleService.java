@@ -32,7 +32,7 @@ public class ScheduleService {
     public ScheduleDto.QueryScheduleResponse getSchedule(UUID id) {
         Optional<Schedule> response = this.scheduleRepository.findById(id);
         return response.map(this.scheduleMapper::toDto)
-                .orElseThrow(() -> new QueryNotFoundException("Schedule not found with id: " + id));
+                .orElseThrow(() -> new QueryNotFoundException(id));
     }
 
     @Transactional
@@ -46,5 +46,24 @@ public class ScheduleService {
         );
         this.scheduleRepository.save(newSchedule);
         return newSchedule.getId();
+    }
+
+    @Transactional
+    public ScheduleDto.QueryScheduleResponse updateSchedule(UUID id, ScheduleDto.PostRequest putRequest) {
+        Schedule schedule = this.scheduleRepository.findById(id)
+                .orElseThrow(() -> new QueryNotFoundException(id));
+        schedule.setTitle(putRequest.title());
+        schedule.setContent(putRequest.content());
+        schedule.setGrade(putRequest.grade());
+        schedule.setClassNum(putRequest.classNum());
+        schedule.setEndDate(putRequest.endDate());
+
+        this.scheduleRepository.save(schedule);
+        return scheduleMapper.toDto(schedule);
+    }
+
+    @Transactional
+    public void deleteSchedule(UUID id) {
+        this.scheduleRepository.deleteById(id);
     }
 }
