@@ -1,5 +1,6 @@
 package org.neatore.onamnotifier.controller;
 
+import org.neatore.onamnotifier.annotation.PublicAccess;
 import org.neatore.onamnotifier.dto.ScheduleDto;
 import org.neatore.onamnotifier.service.ScheduleService;
 
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +31,7 @@ public class SecheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
+    @PublicAccess
     public ResponseEntity<List<ScheduleDto.QueryScheduleResponse>> getSchedules(
             @RequestParam Integer grade,
             @RequestParam Integer classNum

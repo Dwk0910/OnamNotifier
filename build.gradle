@@ -7,11 +7,18 @@ plugins {
 group = 'org.neatore.onamnotifier'
 version = '1.0-SNAPSHOT'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // spring
     implementation 'org.springframework.boot:spring-boot'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -19,9 +26,15 @@ dependencies {
 
     // db
     implementation 'org.postgresql:postgresql:42.7.7'
-
-    implementation 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.6.3'
+
+    // utilities
+    implementation 'org.projectlombok:lombok'
+    implementation 'org.json:json:20251224'
+    // -jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-gson:0.13.0'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
