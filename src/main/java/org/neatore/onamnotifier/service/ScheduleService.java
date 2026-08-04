@@ -32,7 +32,7 @@ public class ScheduleService {
     public ScheduleDto.QueryScheduleResponse getSchedule(UUID id) {
         Optional<Schedule> response = this.scheduleRepository.findById(id);
         return response.map(this.scheduleMapper::toDto)
-                .orElseThrow(() -> new QueryNotFoundException(id));
+                .orElseThrow(() -> new QueryNotFoundException(id.toString()));
     }
 
     @Transactional
@@ -51,7 +51,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleDto.QueryScheduleResponse updateSchedule(UUID id, ScheduleDto.PostRequest putRequest) {
         Schedule schedule = this.scheduleRepository.findById(id)
-                .orElseThrow(() -> new QueryNotFoundException(id));
+                .orElseThrow(() -> new QueryNotFoundException(id.toString()));
         schedule.setTitle(putRequest.title());
         schedule.setContent(putRequest.content());
         schedule.setGrade(putRequest.grade());
