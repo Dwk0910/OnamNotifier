@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +26,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/schedules")
-public class SecheduleController {
+public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
@@ -40,6 +39,7 @@ public class SecheduleController {
     }
 
     @GetMapping("/{id}")
+    @PublicAccess
     public ResponseEntity<ScheduleDto.QueryScheduleResponse> getSchedule(@PathVariable UUID id) {
         return ResponseEntity.ok(this.scheduleService.getSchedule(id));
     }
