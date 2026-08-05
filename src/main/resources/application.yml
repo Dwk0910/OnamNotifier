@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/onamnotifier
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   security:
