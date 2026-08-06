@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.neatore.onamnotifier.annotation.PublicAccess;
 import org.neatore.onamnotifier.service.AuthService;
 
-import org.springframework.lang.NonNull;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import org.springframework.web.method.HandlerMethod;
@@ -21,7 +20,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private final AuthService authService;
 
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
+    @SuppressWarnings("NullableProblems")
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod hm) {
             PublicAccess annotation = AnnotatedElementUtils.findMergedAnnotation(hm.getMethod(), PublicAccess.class);
             if (annotation != null) return true;
