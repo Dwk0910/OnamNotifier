@@ -45,7 +45,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<UUID> createSchedule(@RequestBody ScheduleDto.PostRequest postRequest) {
+    public ResponseEntity<Void> createSchedule(@RequestBody ScheduleDto.PostRequest postRequest) {
         return ResponseEntity.created(
                 ServletUriComponentsBuilder
                         .fromCurrentRequest()
