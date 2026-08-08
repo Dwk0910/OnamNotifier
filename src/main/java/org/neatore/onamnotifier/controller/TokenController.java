@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.neatore.onamnotifier.annotation.PublicAccess;
 import org.neatore.onamnotifier.dto.AuthDto;
-import org.neatore.onamnotifier.service.AuthService;
+import org.neatore.onamnotifier.service.TokenService;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -20,11 +20,11 @@ import java.time.Duration;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
-public class AuthController {
+@RequestMapping("/token")
+public class TokenController {
     private final Duration EXPIRATION_DURATION = Duration.ofDays(30);
 
-    private final AuthService authService;
+    private final TokenService tokenService;
 
     @PostMapping
     @PublicAccess
@@ -33,7 +33,7 @@ public class AuthController {
                 authDto.auth_code() == null || authDto.redirect_uri() == null || authDto.auth_code().isEmpty() || authDto.redirect_uri().isEmpty()
         ) return ResponseEntity.badRequest().build();
 
-        AuthService.JwtToken jwtToken = this.authService.getTokenAuth(authDto, EXPIRATION_DURATION.toMillis());
+        TokenService.JwtToken jwtToken = this.tokenService.getTokenAuth(authDto, EXPIRATION_DURATION.toMillis());
         ResponseCookie jwtCookie = ResponseCookie.from("ONN_ACCESS", jwtToken.jwtToken())
                 .httpOnly(true)
                 .secure(true)

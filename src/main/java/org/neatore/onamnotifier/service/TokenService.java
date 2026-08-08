@@ -13,7 +13,11 @@ import org.neatore.onamnotifier.dto.AuthDto;
 import org.neatore.onamnotifier.exception.AuthException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import javax.crypto.SecretKey;
@@ -24,7 +28,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-public class AuthService {
+public class TokenService {
 
     @Value("${GOOGLE_OAUTH_CLIENT_ID}")
     private String clientId;
@@ -97,17 +101,22 @@ public class AuthService {
     public JwtToken getTokenAuth(AuthDto.LoginRequest authDto, long exp) {
         try {
             RestClient rc = RestClient.create();
+
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            formData.add("code", authDto.auth_code());
+            formData.add("client_id", clientId);
+            formData.add("client_secret", clientSecret);
+            formData.add("redirect_uri", authDto.redirect_uri());
+            formData.add("grant_type", "authorization_code");
+
             String accessToken_ = rc.post()
                     .uri(uriBuilder -> uriBuilder
                             .scheme("https")
                             .host("oauth2.googleapis.com")
                             .path("/token")
-                            .queryParam("code", authDto.auth_code())
-                            .queryParam("client_id", clientId)
-                            .queryParam("client_secret", clientSecret)
-                            .queryParam("redirect_uri", authDto.redirect_uri())
-                            .queryParam("grant_type", "authorization_code")
                             .build())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(formData)
                     .retrieve()
                     .body(String.class);
             String accessToken = new JSONObject(Objects.requireNonNull(accessToken_)).getString("access_token");
@@ -125,6 +134,11 @@ public class AuthService {
 
             return this.createToken(userEmail, exp);
         } catch (Exception e) {
+            if (e instanceof HttpClientErrorException.Unauthorized ex) {
+                JSONObject obj = new JSONObject(ex.getResponseBodyAsString());
+                if (!obj.optString("error").equals("invalid_grant")) throw new IllegalStateException("Unexpected error has occured while authenticating user : " + e);
+            }
+
             throw new AuthException("Failed to authenticate user : " + e);
         }
     }
