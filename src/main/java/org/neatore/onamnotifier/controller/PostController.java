@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +35,12 @@ public class PostController {
     public ResponseEntity<Void> removePost(@RequestParam Long postId) {
         this.postService.remove(postId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    @PublicAccess
+    public ResponseEntity<List<PostDto.QueryResponse>> getAllPosts() {
+        return ResponseEntity.ok(this.postService.queryAll());
     }
 
     @GetMapping("/{id}")

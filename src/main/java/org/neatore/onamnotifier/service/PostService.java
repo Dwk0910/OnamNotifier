@@ -9,6 +9,8 @@ import org.neatore.onamnotifier.dto.PostDto;
 import org.neatore.onamnotifier.exception.QueryNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -29,5 +31,12 @@ public class PostService {
     public PostDto.QueryResponse query(Long id) {
         Post post = this.repository.findById(id).orElseThrow(() -> new QueryNotFoundException(id.toString()));
         return new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent());
+    }
+
+    public List<PostDto.QueryResponse> queryAll() {
+        List<Post> posts = this.repository.findAll();
+        return posts.stream()
+                .map(post -> new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent()))
+                .toList();
     }
 }
