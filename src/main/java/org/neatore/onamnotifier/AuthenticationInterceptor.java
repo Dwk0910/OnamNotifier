@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 import org.neatore.onamnotifier.annotation.PublicAccess;
-import org.neatore.onamnotifier.service.AuthService;
+import org.neatore.onamnotifier.service.TokenService;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -15,18 +15,22 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.util.WebUtils;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
-    private final AuthService authService;
+    private final TokenService tokenService;
 
     @Override
     @SuppressWarnings("NullableProblems")
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod hm) {
-            PublicAccess annotation = AnnotatedElementUtils.findMergedAnnotation(hm.getMethod(), PublicAccess.class);
+            PublicAccess annotation = Optional.ofNullable(AnnotatedElementUtils.findMergedAnnotation(hm.getMethod(), PublicAccess.class))
+                    .orElseGet(() -> AnnotatedElementUtils.findMergedAnnotation(hm.getBeanType(), PublicAccess.class));
+
             if (annotation != null) return true;
 
-            String headerCsrf = response.getHeader("X-Csrf-Token");
+            String headerCsrf = request.getHeader("X-Csrf-Token");
             Cookie tokenCookie = WebUtils.getCookie(request, "ONN_ACCESS");
 
            /*
@@ -37,7 +41,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             4. tokenCookie안의 CSRF Token과 header의 CSRF Token이 서로 일치하는가?
              */
             if (
-                    headerCsrf == null || tokenCookie == null || !authService.validateToken(tokenCookie.getValue()) || !authService.getCsrfToken(tokenCookie.getValue()).equals(headerCsrf)
+                    headerCsrf == null || tokenCookie == null || !tokenService.validateToken(tokenCookie.getValue()) || !tokenService.getCsrfToken(tokenCookie.getValue()).equals(headerCsrf)
             ) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
