@@ -18,7 +18,7 @@ public class PostService {
 
     @Transactional
     public Long create(PostDto.PostRequest request) {
-        Post post = new Post(request.title(), request.content());
+        Post post = new Post(request.title(), request.content(), request.category());
         this.repository.save(post);
         return post.getId();
     }
@@ -30,13 +30,13 @@ public class PostService {
 
     public PostDto.QueryResponse query(Long id) {
         Post post = this.repository.findById(id).orElseThrow(() -> new QueryNotFoundException(id.toString()));
-        return new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent());
+        return new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt());
     }
 
     public List<PostDto.QueryResponse> queryAll() {
         List<Post> posts = this.repository.findAll();
         return posts.stream()
-                .map(post -> new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent()))
+                .map(post -> new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt()))
                 .toList();
     }
 }
