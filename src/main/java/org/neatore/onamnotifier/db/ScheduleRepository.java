@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
     List<Schedule> findSchedulesByGradeAndClassNum(Integer grade, Integer classNum);
+    List<Schedule> findSchedulesByGrade(Integer grade);
+    List<Schedule> findSchedulesByGradeIsNullAndClassNumIsNull();
 }

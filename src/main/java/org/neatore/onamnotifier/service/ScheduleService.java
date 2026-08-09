@@ -29,6 +29,18 @@ public class ScheduleService {
         );
     }
 
+    public List<ScheduleDto.QueryScheduleResponse> getSchedules(Integer grade) {
+        return this.scheduleMapper.toDtoList(
+                this.scheduleRepository.findSchedulesByGrade(grade)
+        );
+    }
+
+    public List<ScheduleDto.QueryScheduleResponse> getPublicSchedules() {
+        return this.scheduleMapper.toDtoList(
+                this.scheduleRepository.findSchedulesByGradeIsNullAndClassNumIsNull()
+        );
+    }
+
     public ScheduleDto.QueryScheduleResponse getSchedule(UUID id) {
         Optional<Schedule> response = this.scheduleRepository.findById(id);
         return response.map(this.scheduleMapper::toDto)

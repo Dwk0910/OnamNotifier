@@ -32,10 +32,12 @@ public class ScheduleController {
     @GetMapping
     @PublicAccess
     public ResponseEntity<List<ScheduleDto.QueryScheduleResponse>> getSchedules(
-            @RequestParam Integer grade,
-            @RequestParam Integer classNum
+            @RequestParam(required = false) Integer grade,
+            @RequestParam(required = false) Integer classNum
     ) {
-        return ResponseEntity.ok(this.scheduleService.getSchedules(grade, classNum));
+        if (grade != null && classNum != null) return ResponseEntity.ok(this.scheduleService.getSchedules(grade, classNum));
+        else if (grade != null) return ResponseEntity.ok(this.scheduleService.getSchedules(grade));
+        else return ResponseEntity.ok(this.scheduleService.getPublicSchedules());
     }
 
     @GetMapping("/{id}")
