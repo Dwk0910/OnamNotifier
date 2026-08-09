@@ -44,10 +44,8 @@ public class Schedule {
     private LocalDateTime endDate;
 
     @Setter
-    @Column(nullable = false)
     private Integer grade;
 
     @Setter
-    @Column(nullable = false)
     private Integer classNum;
 }
