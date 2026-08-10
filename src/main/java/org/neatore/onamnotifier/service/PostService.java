@@ -30,13 +30,13 @@ public class PostService {
 
     public PostDto.QueryResponse query(Long id) {
         Post post = this.repository.findById(id).orElseThrow(() -> new QueryNotFoundException(id.toString()));
-        return new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt());
+        return new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent(), post.getCategory(), post.getCreatedAt());
     }
 
     public List<PostDto.QueryResponse> queryAll() {
         List<Post> posts = this.repository.findAll();
         return posts.stream()
-                .map(post -> new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent(), post.getCreatedAt()))
+                .map(post -> new PostDto.QueryResponse(post.getId(), post.getTitle(), post.getContent(), post.getCategory(), post.getCreatedAt()))
                 .toList();
     }
 }

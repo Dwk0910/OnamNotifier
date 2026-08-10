@@ -6,5 +6,5 @@ import java.time.LocalDateTime;
 
 public abstract class PostDto {
     public record PostRequest(String title, String content, Post.PostCategory category) {}
-    public record QueryResponse(Long id, String title, String content, LocalDateTime createdAt) {}
+    public record QueryResponse(Long id, String title, String content, Post.PostCategory category, LocalDateTime createdAt) {}
 }
