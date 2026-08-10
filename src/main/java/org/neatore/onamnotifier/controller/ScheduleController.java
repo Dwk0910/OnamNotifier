@@ -35,9 +35,7 @@ public class ScheduleController {
             @RequestParam(required = false) Integer grade,
             @RequestParam(required = false) Integer classNum
     ) {
-        if (grade != null && classNum != null) return ResponseEntity.ok(this.scheduleService.getSchedules(grade, classNum));
-        else if (grade != null) return ResponseEntity.ok(this.scheduleService.getSchedules(grade));
-        else return ResponseEntity.ok(this.scheduleService.getPublicSchedules());
+        return ResponseEntity.ok(this.scheduleService.getSchedules(grade, classNum));
     }
 
     @GetMapping("/{id}")

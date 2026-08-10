@@ -24,27 +24,8 @@ public class ScheduleService {
     private final ScheduleMapper scheduleMapper;
 
     public List<ScheduleDto.QueryScheduleResponse> getSchedules(Integer grade, Integer classNum) {
-        List<ScheduleDto.QueryScheduleResponse> priSchedules = this.scheduleMapper.toDtoList(
-                this.scheduleRepository.findSchedulesByGradeAndClassNum(grade, classNum)
-        );
-        priSchedules.addAll(this.getPublicSchedules());
-
-        return priSchedules;
-    }
-
-    public List<ScheduleDto.QueryScheduleResponse> getSchedules(Integer grade) {
-        List<ScheduleDto.QueryScheduleResponse> priSchedules = this.scheduleMapper.toDtoList(
-                        this.scheduleRepository.findSchedulesByGrade(grade)
-        );
-        priSchedules.addAll(this.getPublicSchedules());
-
-        return priSchedules;
-    }
-
-    public List<ScheduleDto.QueryScheduleResponse> getPublicSchedules() {
-        return this.scheduleMapper.toDtoList(
-                this.scheduleRepository.findSchedulesByGradeIsNullAndClassNumIsNull()
-        );
+        List<Schedule> schedules = scheduleRepository.findSchedulesForClass(grade, classNum);
+        return this.scheduleMapper.toDtoList(schedules);
     }
 
     public ScheduleDto.QueryScheduleResponse getSchedule(UUID id) {
