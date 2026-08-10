@@ -24,15 +24,21 @@ public class ScheduleService {
     private final ScheduleMapper scheduleMapper;
 
     public List<ScheduleDto.QueryScheduleResponse> getSchedules(Integer grade, Integer classNum) {
-        return this.scheduleMapper.toDtoList(
+        List<ScheduleDto.QueryScheduleResponse> priSchedules = this.scheduleMapper.toDtoList(
                 this.scheduleRepository.findSchedulesByGradeAndClassNum(grade, classNum)
         );
+        priSchedules.addAll(this.getPublicSchedules());
+
+        return priSchedules;
     }
 
     public List<ScheduleDto.QueryScheduleResponse> getSchedules(Integer grade) {
-        return this.scheduleMapper.toDtoList(
-                this.scheduleRepository.findSchedulesByGrade(grade)
+        List<ScheduleDto.QueryScheduleResponse> priSchedules = this.scheduleMapper.toDtoList(
+                        this.scheduleRepository.findSchedulesByGrade(grade)
         );
+        priSchedules.addAll(this.getPublicSchedules());
+
+        return priSchedules;
     }
 
     public List<ScheduleDto.QueryScheduleResponse> getPublicSchedules() {
