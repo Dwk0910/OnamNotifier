@@ -2,6 +2,7 @@ package org.neatore.onamnotifier.controller;
 
 import lombok.RequiredArgsConstructor;
 
+import org.neatore.onamnotifier.annotation.AdminAccess;
 import org.neatore.onamnotifier.annotation.PublicAccess;
 import org.neatore.onamnotifier.dto.AuthDto;
 import org.neatore.onamnotifier.service.TokenService;
@@ -33,7 +34,7 @@ public class TokenController {
                 authDto.auth_code() == null || authDto.redirect_uri() == null || authDto.auth_code().isEmpty() || authDto.redirect_uri().isEmpty()
         ) return ResponseEntity.badRequest().build();
 
-        TokenService.JwtToken jwtToken = this.tokenService.getTokenAuth(authDto, EXPIRATION_DURATION.toMillis());
+        TokenService.JwtToken jwtToken = this.tokenService.createTokenAuth(authDto, EXPIRATION_DURATION.toMillis());
         ResponseCookie jwtCookie = ResponseCookie.from("ONN_ACCESS", jwtToken.jwtToken())
                 .httpOnly(true)
                 .secure(true)
@@ -57,6 +58,7 @@ public class TokenController {
     }
 
     @DeleteMapping
+    @AdminAccess
     public ResponseEntity<Void> logout() {
         // 말소 쿠키 작성
         ResponseCookie jwtCookie = ResponseCookie.from("ONN_ACCESS")

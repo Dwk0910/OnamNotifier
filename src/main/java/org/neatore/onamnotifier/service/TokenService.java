@@ -1,6 +1,7 @@
 package org.neatore.onamnotifier.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -43,34 +44,42 @@ public class TokenService {
     private List<String> ADMIN_EMAILS;
 
     private SecretKey secretKey;
+    private JwtParser jwtParser;
+
+    public record JwtToken(String jwtToken, String csrfToken) {}
 
     @PostConstruct
     protected void init() {
         this.secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        this.jwtParser = Jwts.parser()
+                .verifyWith(this.secretKey)
+                .build();
     }
 
-    public record JwtToken(String jwtToken, String csrfToken) {}
-
-    public boolean validateToken(String token) {
+    public boolean validateAdminToken(String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(this.secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-            return ADMIN_EMAILS.contains(claims.getSubject());
+            return ADMIN_EMAILS.contains(this.getUserEmail(token));
         } catch (Exception e) {
             return false;
         }
     }
 
     private Claims getPayload(String token) {
-        return Jwts.parser()
-                .verifyWith(this.secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return this.jwtParser
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            throw new AuthException("Provided JWT token is not valid. : " + e);
+        }
+    }
+
+    public String getCsrfToken(String token) {
+        return this.getPayload(token).get("csrf_token").toString();
+    }
+
+    public @Nullable String getUserEmail(String token) {
+        return this.getPayload(token).getSubject();
     }
 
     public JwtToken createToken(String email, long exp) {
@@ -88,15 +97,7 @@ public class TokenService {
         );
     }
 
-    public String getCsrfToken(String token) {
-        return this.getPayload(token).get("csrf_token").toString();
-    }
-
-    public @Nullable String getUserEmail(String token) {
-        return this.getPayload(token).getSubject();
-    }
-
-    public JwtToken getTokenAuth(AuthDto.LoginRequest authDto, long exp) {
+    public JwtToken createTokenAuth(AuthDto.LoginRequest authDto, long exp) {
         try {
             RestClient rc = RestClient.create();
 

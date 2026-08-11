@@ -1,5 +1,6 @@
 package org.neatore.onamnotifier.controller;
 
+import org.neatore.onamnotifier.annotation.AdminAccess;
 import org.neatore.onamnotifier.annotation.PublicAccess;
 import org.neatore.onamnotifier.dto.ScheduleDto;
 import org.neatore.onamnotifier.service.ScheduleService;
@@ -45,6 +46,7 @@ public class ScheduleController {
     }
 
     @PostMapping
+    @AdminAccess
     public ResponseEntity<Void> createSchedule(@RequestBody ScheduleDto.PostRequest postRequest) {
         return ResponseEntity.created(
                 ServletUriComponentsBuilder
@@ -56,6 +58,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
+    @AdminAccess
     public ResponseEntity<ScheduleDto.QueryScheduleResponse> updateSchedule(
             @PathVariable UUID id,
             @RequestBody ScheduleDto.PostRequest putRequest
@@ -64,6 +67,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
+    @AdminAccess
     public ResponseEntity<Void> deleteSchedule(@PathVariable UUID id) {
         this.scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();

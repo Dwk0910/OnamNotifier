@@ -2,6 +2,7 @@ package org.neatore.onamnotifier.controller;
 
 import lombok.RequiredArgsConstructor;
 
+import org.neatore.onamnotifier.annotation.AdminAccess;
 import org.neatore.onamnotifier.annotation.PublicAccess;
 import org.neatore.onamnotifier.dto.PostDto;
 import org.neatore.onamnotifier.service.PostService;
@@ -26,12 +27,14 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
+    @AdminAccess
     public ResponseEntity<Void> createPost(@RequestBody PostDto.PostRequest request) {
         Long id = this.postService.create(request);
         return ResponseEntity.created(URI.create("posts/" + id)).build();
     }
 
     @DeleteMapping
+    @AdminAccess
     public ResponseEntity<Void> removePost(@RequestParam Long postId) {
         this.postService.remove(postId);
         return ResponseEntity.noContent().build();
