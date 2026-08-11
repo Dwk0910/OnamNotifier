@@ -74,8 +74,6 @@ public class TokenService {
     }
 
     public JwtToken createToken(String email, long exp) {
-        if (!ADMIN_EMAILS.contains(email)) throw new IllegalArgumentException("Invalid email: THe provided email " + email + " is not authorized to create a token.");
-
         UUID csrfToken = UUID.randomUUID();
 
         return new JwtToken(
