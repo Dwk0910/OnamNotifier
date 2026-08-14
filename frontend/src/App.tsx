@@ -6,9 +6,9 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
-const ADMIN_EMAIL = import.meta.env.ADMIN_EMAIL;
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
 interface NoticeItem {
   id: string;
