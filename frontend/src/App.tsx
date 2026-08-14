@@ -6,11 +6,9 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 
-const GOOGLE_CLIENT_ID =
-  "540014946000-43qnhms27eobeqi3p9a04ttcacar6f43.apps.googleusercontent.com";
-const REDIRECT_URI = "http://localhost:5173/auth/callback";
-const ADMIN_EMAIL =
-  "1221jyp@gmail.com,jiyul100515@gmail.com,seoy3742@gmail.com,sunwooma2010@gmail.com,hyanghee0624@gmail.com";
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOLE_CLIENT_ID;
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const ADMIN_EMAIL = import.meta.env.ADMIN_EMAIL;
 
 interface NoticeItem {
   id: string;
