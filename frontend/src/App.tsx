@@ -128,7 +128,9 @@ export default function App() {
           auth_code: authCode,
           redirect_uri: REDIRECT_URI,
         })
-        .then(async () => {
+        .then(async (res) => {
+          localStorage.setItem("ONN_CSRF", res.data["ONN_CSRF"]);
+
           try {
             const meRes = await api.get<string>("/me");
             if (meRes.data) {
@@ -232,6 +234,7 @@ export default function App() {
         console.error("로그아웃 요청 실패:", err);
       })
       .finally(() => {
+        localStorage.removeItem("ONN_CSRF");
         setUser(null);
         setIsAdminOpen(false);
         alert("로그아웃 되었습니다.");
